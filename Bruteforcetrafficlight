@@ -1,0 +1,139 @@
+//Delcaración de Los Pines de los LED
+int pin11= 11;//rojo
+int pin10= 10;//amarillo
+int pin9= 9; //verde
+int pin7= 7;
+int pin4= 4;//rojo peatonal
+int pin3= 3;//verde peatonal
+int c=0;
+//variables de tiempo
+long time1;
+long time2;
+int n=0;//variable de conteo del boton
+int k=0;//sirve como condicion de entrada para prender o no el estado de titilar
+ 
+
+ 
+void setup() {
+  
+  //configura las las salidas y las entradas
+ 
+    pinMode( pin9,OUTPUT);
+    pinMode( pin11,OUTPUT);
+    pinMode( pin10,OUTPUT);
+    pinMode( pin4,OUTPUT);
+    pinMode( pin3,OUTPUT);
+    pinMode( pin7,INPUT);
+     Serial.begin(9600);
+}
+ 
+void loop() {
+  
+ //se encienden el estado de semaforo verde y peatonal rojo
+  if (k==0){
+  digitalWrite(9,HIGH); //Enciende el LED
+  digitalWrite(4,HIGH); //Apaga el LED
+  }
+    time1= millis();//se empieza a contar el tiempo
+    while(c==0){
+      //2da variable de tiempo para obtener una referencia desde el instante anterior
+     time2= millis();
+     //contador para ver cuantas veces se a presionado el boton
+      if (digitalRead(7)==HIGH){
+      n=n+1;  
+      delay(500);
+   }
+   //si el boton se ha presionado 5 veces se puede entrar al if y cambiar el valor de la variable k
+   if (n>=5){
+    k=1;
+   }
+     //si se cumple la condicion de tiempo o de presionar el boton 5 veces se entra al estado de titilacion
+     if (time2-time1>=20000 || k==1){
+       
+     digitalWrite(9,LOW); 
+     delay(1000);
+     digitalWrite(9,HIGH);
+     delay(1000);
+     digitalWrite(9,LOW);
+     delay(1000);
+     digitalWrite(9,HIGH);
+     delay(1000);
+     digitalWrite(9,LOW);
+     delay(1000);
+     digitalWrite(9,HIGH);
+     // se reinician todas la variables y se pone la condicion para salir del while
+     k=0;
+     c=1;
+     time2=0;
+     time1=0;
+     digitalWrite(9,LOW); 
+     digitalWrite(4,LOW);
+     n=0;
+    }
+     
+  }
+  c=0;
+  // se prende el led amarillo por 5 seg
+  digitalWrite(10,HIGH);
+  delay(5000);
+  //se pasa al estado de peatonal verde y semaforo rojo
+    digitalWrite(10,LOW);
+  digitalWrite(11,HIGH);
+   digitalWrite(3,HIGH);
+  
+  
+  //se toman los tiempos de referencia
+    time1=millis();
+   while(c==0){
+    time2= millis();
+    if (digitalRead(7)==HIGH){
+      n=n+1;  
+      delay(500);
+   }
+   
+   
+    if (n>=5){
+      n=0;
+      k=1;
+      c=1;
+      time2=0;
+      time1=0;
+      digitalWrite(11,LOW);
+      digitalWrite(9,HIGH); 
+      digitalWrite(4,HIGH);
+      digitalWrite(3,LOW);
+   }
+     
+     //si se cumplen las condiciones de tiempo empieza a titilar el verde peatonal
+     if (time2-time1>=15000){
+       digitalWrite(3,LOW); //Enciende el LED
+     delay(1000);
+     digitalWrite(3,HIGH);
+     delay(1000);
+     digitalWrite(3,LOW);
+     delay(1000);
+     digitalWrite(3,HIGH);
+     delay(1000);
+     digitalWrite(3,LOW);
+     delay(1000);
+     digitalWrite(3,HIGH); 
+
+     delay(2000);
+     //se reinician variables y se apaga el estado anterior, se configura para salir del while
+     digitalWrite(11,LOW);
+     digitalWrite(3,LOW); 
+     digitalWrite(9,HIGH); 
+ 
+
+     c=1;
+     time2=0;
+     time1=0;
+    
+     
+    }
+
+
+}
+c=0;
+n=0;
+}
